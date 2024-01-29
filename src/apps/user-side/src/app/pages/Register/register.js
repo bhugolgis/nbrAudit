@@ -328,6 +328,9 @@ const Register = () => {
         message.warning("Confirm password is empty");
       } else if (password != confirmPassword) {
         message.warning("Passwords do not match");
+      } else if (!isPasswordValid(password)) {
+        // Additional condition for password policy check
+        message.warning("Password does not meet the required policy");
       } else {
         setSpinLoading(true);
         const registerData = new FormData();
@@ -431,6 +434,24 @@ const Register = () => {
       }
     }
   };
+
+  function isPasswordValid(password) {
+    // Define your password policy criteria
+    const minLength = 8;
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasLowercase = /[a-z]/.test(password);
+    const hasDigit = /\d/.test(password);
+    const hasSpecialChar = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]/.test(password);
+
+    // Check if the password meets the criteria
+    return (
+      password.length >= minLength &&
+      hasUppercase &&
+      hasLowercase &&
+      hasDigit &&
+      hasSpecialChar
+    );
+  }
 
   return (
     <Spin spinning={spinLoading} tip="Registering..." size="small">
@@ -854,6 +875,22 @@ const Register = () => {
                     onChange={handleConfirmPassword}
                   />
                 </FormItem>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={24}>
+                <div
+                  style={{ marginTop: "10px", color: "rgba(0, 0, 0, 0.45)" }}
+                >
+                  Password Policy:
+                  <ul>
+                    <li>Minimum length: 8 characters</li>
+                    <li>At least one uppercase letter</li>
+                    <li>At least one lowercase letter</li>
+                    <li>At least one digit</li>
+                    <li>At least one special character</li>
+                  </ul>
+                </div>
               </Col>
             </Row>
             <FormItem>

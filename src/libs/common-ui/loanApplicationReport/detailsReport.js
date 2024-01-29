@@ -42,18 +42,16 @@ const LoanAppDetailReport = () => {
       message.warning("Please select End date");
     } else if (fromDate === null && toDate !== null) {
       message.warning("Please select Start Date");
-    } else if (fromDate === null && toDate === null) {
-      setExcelUrl(
-        `${REACT_APP_BASE_URL}/loan/XlsxLoanReportDetailList/?SubSchemeName=${subSchemeName}&District=${district}&Taluka=${taluka}&LoanSchemeCode=${schemeName}`
-      );
-    } else if (fromDate !== null && toDate !== null) {
-      setExcelUrl(
-        `${REACT_APP_BASE_URL}/loan/XlsxLoanReportDetailList/?from_date=${moment(
-          fromDate
-        ).format("YYYY-MM-DD")}&to_date=${moment(toDate).format(
+    } else {
+      let url = `${REACT_APP_BASE_URL}/loan/XlsxLoanReportDetailList/?SubSchemeName=${subSchemeName}&District=${district}&Taluka=${taluka}&LoanSchemeCode=${schemeName}`;
+
+      if (fromDate !== null && toDate !== null) {
+        url += `&start_date=${moment(fromDate).format(
           "YYYY-MM-DD"
-        )}&SubSchemeName=${subSchemeName}&District=${district}&Taluka=${taluka}&LoanSchemeCode=${schemeName}`
-      );
+        )}&end_date=${moment(toDate).format("YYYY-MM-DD")}`;
+      }
+
+      setExcelUrl(url);
     }
   };
 
@@ -267,6 +265,10 @@ const LoanAppDetailReport = () => {
 
   const handleApiSearch = () => {
     console.log(fromDate, toDate);
+    const formattedFromDate = fromDate.format("YYYY-MM-DD");
+    console.log(formattedFromDate);
+    const formattedToDate = toDate.format("YYYY-MM-DD");
+    console.log(formattedToDate);
     if (fromDate !== null && toDate == null) {
       message.warning("Please select End Date");
     } else if (toDate !== null && fromDate === null) {
@@ -275,13 +277,14 @@ const LoanAppDetailReport = () => {
       if (fromDate !== null && toDate !== null) {
         axios
           .get(
-            `${REACT_APP_BASE_URL}/loan/LoanReportDetailList/?District=${district}&Taluka=${taluka}&LoanSchemeCode=${schemeName}&SubSchemeName=${subSchemeName}&from_date=${moment(
+            `${REACT_APP_BASE_URL}/loan/LoanReportDetailList/?District=${district}&Taluka=${taluka}&LoanSchemeCode=${schemeName}&SubSchemeName=${subSchemeName}&start_date=${moment(
               fromDate
-            ).format("YYYY-MM-DD")}&to_date=${moment(toDate).format(
+            ).format("YYYY-MM-DD")}&end_date=${moment(toDate).format(
               "YYYY-MM-DD"
             )}`
           )
           .then((response) => {
+            console.log(response.data.results);
             setDetailData(response.data.results);
           })
           .catch((error) => {
