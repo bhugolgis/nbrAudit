@@ -5,7 +5,7 @@
       "headers": [
         {
           "key": "Etag",
-          "value": null
+          "value": ""
         },
         {
           "key": "Referrer-Policy",
