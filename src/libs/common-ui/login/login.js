@@ -24,12 +24,68 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  // const generateRandomKey = () => {
+  //   const randomBytes = new Uint8Array(32);
+  //   window.crypto.getRandomValues(randomBytes);
+  //   return Array.from(randomBytes, (byte) =>
+  //     byte.toString(16).padStart(2, "0")
+  //   ).join("");
+  // };
 
   const handleUserChange = (e) => {
-    setUsername(e.target.value);
+    const SECRET_KEY =
+      "d73b3572d4b6e4df6c5b0efb0616e9a8c9266ba6d6a10abdc78a11485d002fd8";
+
+    // Convert key and iv from hex to WordArray
+    const keyBytes = CryptoJS.enc.Hex.parse(SECRET_KEY);
+    const ivBytes = CryptoJS.enc.Hex.parse("00000000000000000000000000000000");
+
+    // Get the value from the input field
+    const data = e.target.value;
+
+    // Create the AES cipher
+    const cipher = CryptoJS.AES.encrypt(data, keyBytes, {
+      iv: ivBytes,
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7,
+    });
+
+    // Convert the ciphertext to base64
+    const encryptedData = cipher.toString();
+
+    // Do something with the encrypted data
+    console.log("Encrypted Data:", encryptedData);
+
+    // Set the username
+    setUsername(encryptedData);
   };
+
   const handlePassChange = (e) => {
-    setPassword(e.target.value);
+    const SECRET_KEY =
+      "d73b3572d4b6e4df6c5b0efb0616e9a8c9266ba6d6a10abdc78a11485d002fd8";
+
+    // Convert key and iv from hex to WordArray
+    const keyBytes = CryptoJS.enc.Hex.parse(SECRET_KEY);
+    const ivBytes = CryptoJS.enc.Hex.parse("00000000000000000000000000000000");
+
+    // Get the value from the input field
+    const data = e.target.value;
+
+    // Create the AES cipher
+    const cipher = CryptoJS.AES.encrypt(data, keyBytes, {
+      iv: ivBytes,
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7,
+    });
+
+    // Convert the ciphertext to base64
+    const encryptedData = cipher.toString();
+
+    // Do something with the encrypted data
+    console.log("Encrypted Password:", encryptedData);
+
+    // Set the password
+    setPassword(encryptedData);
   };
 
   const [captchaValue, setCaptchaValue] = useState(false);
@@ -45,7 +101,7 @@ const Login = () => {
       };
       axios
         .post(
-          `${REACT_APP_BASE_URL}/adminmodule/CustomLoginAPI`,
+          `${REACT_APP_BASE_URL}/adminmodule/TestCustomLoginAPI`,
           {
             username: username,
             password: password,
